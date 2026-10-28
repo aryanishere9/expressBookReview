@@ -10,7 +10,7 @@ const authenticatedUser = (username, password) =>
   users.some((u) => u.username === username && u.password === password);
 
 // Only registered users can login
-regd_users.post("/login", (req, res) => {
+const login = (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ message: "Username and password are required" });
@@ -20,8 +20,10 @@ regd_users.post("/login", (req, res) => {
   }
   const accessToken = jwt.sign({ data: username }, "access", { expiresIn: 60 * 60 });
   req.session.authorization = { accessToken, username };
-  return res.status(200).json({ message: "User successfully logged in", token: accessToken });
-});
+  return res.status(200).json({ message: "Login successful!", token: accessToken });
+};
+
+regd_users.post("/login", login);
 
 // Add or modify a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
@@ -57,3 +59,4 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
 
 module.exports.authenticated = regd_users;
 module.exports.users = users;
+module.exports.login = login;
